@@ -1,0 +1,5 @@
+
+.DS_Store
+*.pyc
+*.save
+MLTrader/Live Server/app/resources/api_state/tdaAPI_token.json

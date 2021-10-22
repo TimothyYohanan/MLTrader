@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="full-height">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- CSS Local Imports -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/jquery.datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/mdb.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/datatables.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/mdb-file-upload.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/datatables-select.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>MLTrader - {{ title }}</title>
+    {% else %}
+    <title>MLTrader</title>
+    {% endif %}
+</head>
+
+<body>
+
+    <!-- JS Local Imports -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.datetimepicker.full.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/mdb.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatables.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/mdb-file-upload.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatables-select.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-filestyle.js') }}"></script>
+
+    <!-- navigation bar -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-steel scrolling-navbar fixed-top">
+            <div class="container px-4">
+
+                <a class="navbar-brand mr-4" href="/">MLTrader</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <li class="navbar-nav">
+                        <a class="nav-link" href="{{ url_for('datastream.hmi', action='view') }}">TDAmeritrade Streaming</a>
+                    </li>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <!-- end navigation bar -->
+    <!-- main content. template html files insert their content between "block content" and "end block content" -->
+    <main role="main" class="container">
+        <div class="col">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock content %}
+        </div>
+    </main>
+    <!-- end main content and sidebar -->
+
+</body>
+</html>

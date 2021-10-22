@@ -1,10 +1,5 @@
-import numpy as np
-import pandas as pd
 import joblib
-from multiprocessing import Pool
-import os
-from datetime import datetime
-from app.general_purpose.datetime_utils import utcTimestamp_from_utcDatetime, datetime_from_utcTimestamp
+import numpy as np
 from pathlib import Path
 
 # self.quotes = {
@@ -112,34 +107,34 @@ class QuotesHandler:
         self.__save()
         return None
                   
-    def append(self, ticker: str, timestamp: int, newData: list) -> None:
+    def append(self, ticker: str, unix_milliseconds: int, newData: list) -> None:
         stream_id = self.quotes['current stream'] - 1
         streamData = self.quotes['tickers'][ticker]['streams'][stream_id]['data']  
-        self.__append_timestamp_handler(ticker, stream_id, timestamp)
+        self.__append_timestamp_handler(ticker, stream_id, unix_milliseconds)
         self.quotes['tickers'][ticker]['streams'][stream_id]['data'] = np.append(streamData, [newData], axis=0) 
         self.quotes['tickers'][ticker]['row count'] += 1
         self.__save()
         return None
 
-    def __append_timestamp_handler(self, ticker: str, stream_id: int, timestamp: int) -> None:
+    def __append_timestamp_handler(self, ticker: str, stream_id: int, unix_milliseconds: int) -> None:
         stream = self.quotes['tickers'][ticker]['streams'][stream_id]
 
         if stream['start'] is None:
-            self.quotes['tickers'][ticker]['streams'][stream_id]['start'] = timestamp
+            self.quotes['tickers'][ticker]['streams'][stream_id]['start'] = unix_milliseconds
 
         if self.newStream is True:
-            self.quotes['current stream start'] = timestamp
+            self.quotes['current stream start'] = unix_milliseconds
             self.newStream = False
 
         if self.quotes['tickers'][ticker]['row count'] == 0:
-            self.quotes['tickers'][ticker]['oldest data'] = timestamp
+            self.quotes['tickers'][ticker]['oldest data'] = unix_milliseconds
 
         if self.firstRun is True:
-            self.quotes['oldest data'] = timestamp        
+            self.quotes['oldest data'] = unix_milliseconds       
             self.firstRun = False
 
-        self.quotes['tickers'][ticker]['latest data'] = timestamp
-        self.quotes['latest data'] = timestamp
+        self.quotes['tickers'][ticker]['latest data'] = unix_milliseconds
+        self.quotes['latest data'] = unix_milliseconds
         return None
 
     def __close_previous_stream(self):
@@ -149,7 +144,9 @@ class QuotesHandler:
                 data = self.quotes['tickers'][ticker]['streams'][prev_stream_id]['data']
                 latest_timestamp = data[-1, 0]
                 self.quotes['tickers'][ticker]['streams'][prev_stream_id]['end'] = latest_timestamp
-                self.quotes['tickers'][ticker]['streams'][prev_stream_id]['validation'] = True if self.__timestamps_are_ordered(data) else False
+                # opted to remove the following line because it's extra processing, and there have been no validation issues so far
+                # if you think there is an issue, can uncomment this and check
+                # self.quotes['tickers'][ticker]['streams'][prev_stream_id]['validation'] = True if self.__timestamps_are_ordered(data) else False
         return None
 
     def __timestamps_are_ordered(self, np_array: np) -> bool:

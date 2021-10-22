@@ -1,3 +1,3 @@
 class Config:
-    SECRET_KEY = "put_secret_key_here"
+    SECRET_KEY = "SECRET"
 
